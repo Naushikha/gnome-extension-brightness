@@ -35,7 +35,7 @@ var ScreenBrightnessPanelMenu = GObject.registerClass(class Screen_BrightnessPan
 
 
     populateMenu(){
-        this.setMenu(new PopupMenu.PopupMenu(this, St.Align.START, St.Side.TOP, 0));
+        this.menu.removeAll();
         this.sliders = [];
         this.mainSlider = null;
 
