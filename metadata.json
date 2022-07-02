@@ -3,6 +3,7 @@
   "name": "Adjust Display Brightness",
   "shell-version": [
     "42",
+    "41",
     "40",
     "3.36"
   ],
