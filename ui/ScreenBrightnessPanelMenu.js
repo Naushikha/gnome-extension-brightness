@@ -56,7 +56,7 @@ var ScreenBrightnessPanelMenu = GObject.registerClass(class Screen_BrightnessPan
             };
         } catch(error){
             Log.Log.log(error.stack);
-            this.displays = null; 
+            this.displays = null;
         }
 
         this.logButton = new PopupMenu.PopupMenuItem('Show logging');
@@ -71,7 +71,7 @@ var ScreenBrightnessPanelMenu = GObject.registerClass(class Screen_BrightnessPan
         this.reloadButton.connect('activate', (item) => {
             this.populateMenu();
         });
-        
+
         this.menu.addMenuItem(this.logButton);
         this.menu.addMenuItem(this.reloadButton);
 
@@ -79,15 +79,17 @@ var ScreenBrightnessPanelMenu = GObject.registerClass(class Screen_BrightnessPan
 
     addDisplaySliders() {
         if (Array.isArray(this.displays) && 0 < this.displays.length) {
-            var mainSliderValue = this.displays[0].current / this.displays[0].max; 
+            if (this.displays.length > 1) {
+                var mainSliderValue = this.displays[0].current / this.displays[0].max;
 
-            if (this.mainSlider == null) {
-                this.mainSlider = new SliderMenuItem.MainBrightnessSliderItem(
-                    mainSliderValue, this.sliders, {}); 
+                if (this.mainSlider == null) {
+                    this.mainSlider = new SliderMenuItem.MainBrightnessSliderItem(
+                        mainSliderValue, this.sliders, {});
+                }
+
+                this.menu.addMenuItem(this.mainSlider);
+                this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
             }
-
-            this.menu.addMenuItem(this.mainSlider);
-            this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
 
             for (var display of this.displays) {
                 var slider = new SliderMenuItem.BrightnessSliderItem(
