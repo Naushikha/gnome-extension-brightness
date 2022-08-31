@@ -20,6 +20,18 @@ function getValueFromString(value, key, idx){
     return null;
 }
 
+function getValueFromArray(array, key, idx){
+    if (array != null){
+        for (const value of array) { 
+            var rv = getValueFromString(value, key, idx);
+            if (rv != null){
+                return rv;
+            }
+        }
+    }
+    return null;
+}
+
 function getDisplays() {
 
     const result = MyShell.exec('ddcutil detect --brief');
@@ -34,8 +46,8 @@ function getDisplays() {
     result.split('Display ').forEach(group => {
         const lines = group.split('\n');
         if (2 < lines.length){
-            const bus = getValueFromString(lines[1], '/dev/i2c-', 1);
-            const description = getValueFromString(lines[2], 'Monitor:', 1);
+            const bus = getValueFromArray(lines, '/dev/i2c-', 1);
+            const description = getValueFromArray(lines, 'Monitor:', 1);
             const name = getValueFromString(description, ':', 1);
             //const serialNumber = description ? description.split(':')[2] : null;
             
@@ -94,3 +106,4 @@ function setDisplayBrightness(bus, value) {
     const result = MyShell.execAsync(`ddcutil setvcp 10 ${value} --bus ${bus}`);
     Log.Log.log(`setDisplayBrightness - value: ${value}, bus: ${bus}, result: ${result}`);
 }
+
