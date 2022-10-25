@@ -46,8 +46,8 @@ var BrightnessSliderItem = GObject.registerClass(class Brightness_SliderItem ext
 
         this.setValue(current / max);
 
-        this.slider.connect('drag-end', (item) => {
-              this._broadcastBrightness(item._value);
+        this.slider.connect('notify::value', (item) => {
+            this._broadcastBrightness(item._value);
         });
 
         this.display_label = new St.Label({
@@ -58,12 +58,6 @@ var BrightnessSliderItem = GObject.registerClass(class Brightness_SliderItem ext
 
     }
 
-
-    setBrightness(percent) {
-        this.setValue(percent);
-        this._broadcastBrightness(percent);
-        this._updateSliderLabel(percent);
-    }
 
     _ratioToBrightness(ratio) {
         return parseInt(ratio * this.max);
@@ -92,19 +86,9 @@ var MainBrightnessSliderItem = GObject.registerClass(class Main_BrightnessSlider
         super._init(value, params);
         this.sliders = sliders;
 
-        this.slider.connect('drag-end', (item) => {
-              this._setAllBrightness(item._value)
-        });
-
         this.slider.connect('notify::value', (item) => {
               this._setAllValue(item._value)
         });
-    }
-
-    _setAllBrightness(value) {
-        for (var s of this.sliders) {
-           s.setBrightness(value);
-        }
     }
 
     _setAllValue(value) {
