@@ -4,20 +4,30 @@ const PopupMenu = imports.ui.popupMenu;
 const GObject = imports.gi.GObject;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Gio = imports.gi.Gio;
+const Clutter = imports.gi.Clutter;
 const Me = ExtensionUtils.getCurrentExtension();
 
 const DDC = Me.imports.services.ddc;
 const Log = Me.imports.services.log;
 const MyShell = Me.imports.services.shell;
 const Timer = Me.imports.services.timer;
-const SliderMenuItem = Me.imports.ui.SliderMenuItem;
-const LogDialogBox = Me.imports.ui.LogDialogBox;
-const InstallDDCUtilDialogBox = Me.imports.ui.InstallDDCUtilDialogBox;
+const BrightnessSliderItem = Me.imports.ui.slider.BrightnessSliderItem;
+const MainBrightnessSliderItem = Me.imports.ui.slider.MainBrightnessSliderItem;
+const LogDialogBox = Me.imports.ui.dialog.LogDialogBox;
+const InstallDDCUtilDialogBox = Me.imports.ui.dialog.InstallDDCUtilDialogBox;
 
 
 var ScreenBrightnessPanelMenu = GObject.registerClass(class Screen_BrightnessPanelMenu extends PanelMenu.Button {
     _init() {
         super._init(St.Align.START);
+        this.sliders = [];
+        this.mainSlider = null;
+        this.displays = null;
+        this.reloadButton = null;
+        this.logButton = null;
+        this.logDialog = null;
+        this.installDDCUtilDialog = null;
+
         this.connect('destroy', () => {this._onDestroy()});
         var gicon = Gio.icon_new_for_string(Me.path + '/ui/extension-display-brightness-symbolic.svg');
         var icon =  new St.Icon({gicon, style_class: 'system-status-icon'});
@@ -32,7 +42,6 @@ var ScreenBrightnessPanelMenu = GObject.registerClass(class Screen_BrightnessPan
 
         Log.Log.log(`ScreenBrightnessPanelMenu init finsihed.`);
     }
-
 
     populateMenu(){
         this.menu.removeAll();
@@ -83,7 +92,7 @@ var ScreenBrightnessPanelMenu = GObject.registerClass(class Screen_BrightnessPan
                 var mainSliderValue = this.displays[0].current / this.displays[0].max;
 
                 if (this.mainSlider == null) {
-                    this.mainSlider = new SliderMenuItem.MainBrightnessSliderItem(
+                    this.mainSlider = new MainBrightnessSliderItem.MainBrightnessSliderItem(
                         mainSliderValue, this.sliders, {});
                 }
 
@@ -92,7 +101,7 @@ var ScreenBrightnessPanelMenu = GObject.registerClass(class Screen_BrightnessPan
             }
 
             for (var display of this.displays) {
-                var slider = new SliderMenuItem.BrightnessSliderItem(
+                var slider = new BrightnessSliderItem.BrightnessSliderItem(
                     display.bus, display.name, display.current, display.max, {});
                 this.sliders.push(slider);
                 this.menu.addMenuItem(slider);
@@ -100,6 +109,35 @@ var ScreenBrightnessPanelMenu = GObject.registerClass(class Screen_BrightnessPan
         } else {
             this.menu.addMenuItem(new PopupMenu.PopupMenuItem('No monitors detected.', {'reactive': false}));
         }
+
+        if (this.mainSlider != null){
+            this.connect('scroll-event', this.scrollEvent.bind(this));
+        }
+    }
+
+
+    scrollEvent(actor, event) {
+        let direction;
+        switch (event.get_scroll_direction()) {
+        case Clutter.ScrollDirection.UP:
+            direction = 0.05;
+            break;
+        case Clutter.ScrollDirection.LEFT:
+            direction = -0.05;
+            break;
+        case Clutter.ScrollDirection.DOWN:
+            direction = -0.05;
+            break;
+        case Clutter.ScrollDirection.RIGHT:
+            direction = 0.05;
+            break;
+        default:
+            return Clutter.EVENT_STOP;
+        }
+
+        this.mainSlider.slider.value += direction
+
+        return Clutter.EVENT_STOP;
     }
 
     _onDestroy(){
