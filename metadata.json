@@ -2,6 +2,7 @@
   "description": "Simple GNOME extension to control displays' brightness via DDC. It requires ddcutil to be installed, I2C permissions for non-root users configured.",
   "name": "Adjust Display Brightness",
   "shell-version": [
+    "44",
     "43",
     "42",
     "41",
