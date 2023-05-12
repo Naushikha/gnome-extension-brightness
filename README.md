@@ -20,3 +20,8 @@ A reboot is needed.
 
 ## Official GNOME Shell Extensions website
 [https://extensions.gnome.org/extension/4652/adjust-display-brightness/](https://extensions.gnome.org/extension/4652/adjust-display-brightness/)
+
+# Support
+If you like what I'm doing, you can support me at:
+* https://www.patreon.com/BrunoEnglert
+* https://www.buymeacoffee.com/brunoenglert
