@@ -2,18 +2,21 @@
  * Taken from: https://github.com/optimisme/gjs-examples/blob/master/assets/timers.js
  */
 
-const Mainloop = imports.mainloop;
+import GLib from 'gi://GLib';
 
-function setTimeout(func, millis, ...args) {
-
-    let id = Mainloop.timeout_add(millis, () => {
-        func(...args);
-        return false; // Stop repeating
-    }, null);
+export function setTimeout(func, millis, ...args) {
+    let id = GLib.timeout_add(
+        GLib.PRIORITY_DEFAULT,
+        millis,
+        () => {
+            func(...args);
+            return false; // Stop repeating
+        }
+    );
 
     return id;
 }
 
-function clearTimeout(id) {
-    Mainloop.source_remove(id);
+export function clearTimeout(id) {
+    GLib.source_remove(id);
 }

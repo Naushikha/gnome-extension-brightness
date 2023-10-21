@@ -1,20 +1,21 @@
-const GLib = imports.gi.GLib;
-const ByteArray = imports.byteArray;
+import GLib from 'gi://GLib';
 
-function exec(cmd) {
+const Decoder = new TextDecoder("utf-8");
+
+export function exec(cmd) {
     try {
         let [, out] = GLib.spawn_command_line_sync(cmd);
-        const response = ByteArray.toString(out);
+        const response = Decoder.decode(out);
         return response;
     } catch (err) {
         return null;
     }
 }
 
-function execAsync(cmd) {
+export function execAsync(cmd) {
     try {
         let [, out] = GLib.spawn_command_line_async(cmd);
-        const response = ByteArray.toString(out);
+        const response = Decoder.decode(out);
         return response;
     } catch (err) {
         return null;
