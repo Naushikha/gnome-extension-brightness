@@ -1,21 +1,19 @@
-const St = imports.gi.St;
-const ExtensionUtils = imports.misc.extensionUtils;
-const PopupMenu = imports.ui.popupMenu;
-const Slider = imports.ui.slider;
-const GObject = imports.gi.GObject;
+import St from 'gi://St';
+import GObject from 'gi://GObject';
+import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
+import * as Slider from 'resource:///org/gnome/shell/ui/slider.js';
+import * as DDC from '../../services/ddc.js';
+import * as Log from '../../services/log.js';
+import * as Timer from '../../services/timer.js';
+import LabeldSliderItem from './LabeldSliderItem.js';
 
-const Me = ExtensionUtils.getCurrentExtension();
-const DDC = Me.imports.services.ddc;
-const Log = Me.imports.services.log;
-const Timer = Me.imports.services.timer;
-const LabeldSliderItem = Me.imports.ui.slider.LabeldSliderItem;
-
-
-var BrightnessSliderItem = GObject.registerClass(class Brightness_SliderItem extends LabeldSliderItem.LabeldSliderItem {  
+export default class BrightnessSliderItem extends LabeldSliderItem {
     _init(bus, name, current, max, params) {
-        super._init("", params);
+        super._init('', params);
 
-        this.connect('destroy', () => {this._onDestroy()});
+        this.connect('destroy', () => {
+            this._onDestroy();
+        });
 
         this.bus = bus;
         this.name = name;
@@ -30,13 +28,11 @@ var BrightnessSliderItem = GObject.registerClass(class Brightness_SliderItem ext
         });
 
         this.display_label = new St.Label({
-                        style_class: 'helloworld-label', // add CSS label
-                        text: this.name
-                        });
+            style_class: 'helloworld-label', // add CSS label
+            text: this.name,
+        });
         this.add_child(this.display_label);
-
     }
-
 
     _ratioToBrightness(ratio) {
         return parseInt(ratio * this.max);
@@ -52,11 +48,11 @@ var BrightnessSliderItem = GObject.registerClass(class Brightness_SliderItem ext
         }, 500);
     }
 
-    _onDestroy(){
+    _onDestroy() {
         if (this.timeout) {
             Timer.clearTimeout(this.timeout);
-        };
+        }
     }
+}
 
-});
-
+GObject.registerClass(BrightnessSliderItem);

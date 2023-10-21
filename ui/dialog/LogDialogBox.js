@@ -1,46 +1,51 @@
-const St = imports.gi.St;
-const Gio = imports.gi.Gio;
-const ModalDialog = imports.ui.modalDialog;
-const Clutter = imports.gi.Clutter;
-const GObject = imports.gi.GObject;
-const ExtensionUtils = imports.misc.extensionUtils;
-const Me = ExtensionUtils.getCurrentExtension();
+import St from 'gi://St';
+import Gio from 'gi://Gio';
+import Clutter from 'gi://Clutter';
+import GObject from 'gi://GObject';
+import * as ModalDialog from 'resource:///org/gnome/shell/ui/modalDialog.js';
+import * as Log from '../../services/log.js';
 
-const Log = Me.imports.services.log;
-
-
-var LogDialogBox = GObject.registerClass(class Log_DialogBox extends ModalDialog.ModalDialog {
+export default class LogDialogBox extends ModalDialog.ModalDialog {
     _init() {
-        super._init({ styleClass: 'extension-dialog'});
+        super._init({styleClass: 'extension-dialog'});
 
-        this.setButtons([{ label: "OK",
-                           action: () => {this._onClose()},
-                           key:    Clutter.KEY_Escape
-                         },
-                         { label: "Copy to clipboard",
-                           action: () => {this._copyToClipBoard()},
-                           key:    Clutter.KEY_Tab
-                         },
+        this.setButtons([
+            {
+                label: 'OK',
+                action: () => {
+                    this._onClose();
+                },
+                key: Clutter.KEY_Escape,
+            },
+            {
+                label: 'Copy to clipboard',
+                action: () => {
+                    this._copyToClipBoard();
+                },
+                key: Clutter.KEY_Tab,
+            },
+        ]);
 
-                         ]);
+        var box = new St.BoxLayout({vertical: true});
 
-        var box = new St.BoxLayout({ vertical: true});
-        
-
-        var gicon = new Gio.FileIcon({ file: Gio.file_new_for_path(Me.path + "/icons/icon.png") });
-        var icon = new St.Icon({ gicon: gicon });
+        var gicon = new Gio.FileIcon({
+            file: Gio.file_new_for_path('./icons/icon.png'),
+        });
+        var icon = new St.Icon({gicon: gicon});
         box.add(icon);
 
-        this.label = new St.Label({ text: "" ,
-         x_align: Clutter.ActorAlign.CENTER,
-          style_class: "title-label" });
+        this.label = new St.Label({
+            text: '',
+            x_align: Clutter.ActorAlign.CENTER,
+            style_class: 'title-label',
+        });
 
         box.add(this.label);
 
         this.contentLayout.add(box);
     }
 
-    setText(text){
+    setText(text) {
         this.label.text = text;
     }
 
@@ -49,7 +54,12 @@ var LogDialogBox = GObject.registerClass(class Log_DialogBox extends ModalDialog
     }
 
     _copyToClipBoard() {
-        St.Clipboard.get_default().set_text(St.ClipboardType.CLIPBOARD, Log.Log.toString());
+        St.Clipboard.get_default().set_text(
+            St.ClipboardType.CLIPBOARD,
+            Log.Log.toString(),
+        );
         this.close(global.get_current_time());
     }
-});
+}
+
+GObject.registerClass(LogDialogBox);

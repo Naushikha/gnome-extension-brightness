@@ -1,29 +1,27 @@
-const St = imports.gi.St;
-const ExtensionUtils = imports.misc.extensionUtils;
-const PopupMenu = imports.ui.popupMenu;
-const Slider = imports.ui.slider;
-const GObject = imports.gi.GObject;
+import St from 'gi://St';
+import GObject from 'gi://GObject';
+import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
+import * as Slider from 'resource:///org/gnome/shell/ui/slider.js';
+import * as DDC from '../../services/ddc.js';
+import * as Log from '../../services/log.js';
+import * as Timer from '../../services/timer.js';
+import LabeldSliderItem from './LabeldSliderItem.js';
 
-const Me = ExtensionUtils.getCurrentExtension();
-const DDC = Me.imports.services.ddc;
-const Log = Me.imports.services.log;
-const Timer = Me.imports.services.timer;
-const LabeldSliderItem = Me.imports.ui.slider.LabeldSliderItem;
-
-
-var MainBrightnessSliderItem = GObject.registerClass(class Main_BrightnessSliderItem extends LabeldSliderItem.LabeldSliderItem {  
+export default class MainBrightnessSliderItem extends LabeldSliderItem {
     _init(value, sliders, params) {
         super._init(value, params);
         this.sliders = sliders;
 
         this.slider.connect('notify::value', (item) => {
-              this._setAllValue(item._value)
+            this._setAllValue(item._value);
         });
     }
 
     _setAllValue(value) {
         for (var s of this.sliders) {
-           s.setValue(value);
+            s.setValue(value);
         }
     }
-});
+}
+
+GObject.registerClass(MainBrightnessSliderItem);
