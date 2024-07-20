@@ -16,7 +16,7 @@ export default class LabeldSliderItem extends PopupMenu.PopupMenuItem {
             this._updateSliderLabel(item._value);
         });
 
-        this.add(this.slider);
+        this.add_child(this.slider);
     }
 
     _updateSliderLabel(sliderValue) {

@@ -31,16 +31,16 @@ export default class ScreenBrightnessPanelMenu extends PanelMenu.Button {
         this.extensionObject = Extension.lookupByURL(import.meta.url);
         var gicon = Gio.icon_new_for_string(
             this.extensionObject.path +
-                '/ui/extension-display-brightness-symbolic.svg',
+            '/ui/extension-display-brightness-symbolic.svg',
         );
         var icon = new St.Icon({gicon, style_class: 'system-status-icon'});
-        this.add_actor(icon);
+        this.add_child(icon);
 
         var iconLabel = new St.Label({
             style_class: 'helloworld-label', // add CSS label
             text: 'br',
         });
-        this.add_actor(iconLabel);
+        this.add_child(iconLabel);
         this.populateMenu();
 
         Log.Log.log(`ScreenBrightnessPanelMenu init finished.`);

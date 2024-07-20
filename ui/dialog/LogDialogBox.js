@@ -32,7 +32,7 @@ export default class LogDialogBox extends ModalDialog.ModalDialog {
             file: Gio.file_new_for_path('./icons/icon.png'),
         });
         var icon = new St.Icon({gicon: gicon});
-        box.add(icon);
+        box.add_child(icon);
 
         this.label = new St.Label({
             text: '',
@@ -40,9 +40,9 @@ export default class LogDialogBox extends ModalDialog.ModalDialog {
             style_class: 'title-label',
         });
 
-        box.add(this.label);
+        box.add_child(this.label);
 
-        this.contentLayout.add(box);
+        this.contentLayout.add_child(box);
     }
 
     setText(text) {
